@@ -1,6 +1,7 @@
 /* Sources for this project:
   https://youtu.be/E_-lMZDi7Uw */
 #include <iostream>
+#include <ncurses> //for the inputs
 using namespace std;
 
 bool gameOver; //global variable that will be used throughout
@@ -8,27 +9,22 @@ bool gameOver; //global variable that will be used throughout
 /*--- Game dimensions ---*/
 const int width  = 40;
 const int height = 20;
-int x, y, fruitX, fruitY, score;
+int snakeX, snakeY, fruitX, fruitY, score;
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN};
 eDirection dir;
 
 void Setup() {
-  cout << "Setup running" << endl; //TODO: delete
-
   gameOver = false;
   dir = STOP;
-  x = width / 2;
-  y = height / 2;
+  snakeX = width / 2;
+  snakeY = height / 2;
   fruitX = rand() % width;
   fruitY = rand() % height;
   score = 0;
-
 }
 
 void Draw() {
-  cout << "Draw running" << endl; //TODO: delete
-
   system("clear"); //system('cls') on windows
 
   /*----- top wall ----*/
@@ -45,7 +41,13 @@ void Draw() {
       } else if ( j == width) {
         cout << "#";
       } else {
-        cout << " ";
+        if ( i == snakeY && j == snakeX) {
+          cout << "O"; //this is the snake head
+        } else if ( i == fruitY && j == fruitX) {
+          cout << "F";
+        } else {
+          cout << " ";
+        }
       }
     }
     cout << endl;
@@ -62,6 +64,26 @@ void Draw() {
 
 void Input() {
   cout << "Input running" << endl; //TODO: delete
+
+  if (kbhit()) { // keyboard hit, returns positive no if keyboard is hit, zero otherwise
+    switch (getch()) { // return ascii value of keyboard hit
+      case 'a':
+        dir = LEFT;
+        break;
+      case 'd':
+        dir = DOWN;
+        break;
+      case 's':
+        dir = RIGHT;
+        break;
+      case 'w':
+        dir = UP;
+        break;
+      case 'x':
+        gameOver = true;
+        break;
+    }
+  }
 
 }
 
