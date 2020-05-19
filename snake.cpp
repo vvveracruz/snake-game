@@ -23,7 +23,7 @@ void Setup() {
   fruitX = rand() % width;
   fruitY = rand() % height;
   score = 0;
-  nTail = 0;
+  nTail = 1;
 }
 
 void Draw() {
@@ -50,7 +50,7 @@ void Draw() {
           cout << "*";
         } else {
           bool tail = false;
-          for (int k = 0; k < nTail; k++) {     // tail
+          for (int k = 0; k <= nTail; k++) {     // tail
             if (tailX[k] == j && tailY[k] ==  i) {
               cout << "o";
               tail = true;
@@ -133,8 +133,16 @@ void Input() {
 }
 
 void Logic() {
+  // die on hitting walls
   if (headX >  width || headX < 0 || headY >  height || headY < 0) {
     gameOver = true;
+  }
+
+  // die on hitting tail
+  for (int k = 1; k <= nTail; k++) {
+    if (tailX[k] == headX && tailY[k] == headY) {
+      gameOver = true;
+    }
   }
 
   tailX[0] = headX;
