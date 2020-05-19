@@ -23,7 +23,7 @@ void Setup() {
   fruitX = rand() % width;
   fruitY = rand() % height;
   score = 0;
-  nTail = 1;
+  nTail = 0;
 }
 
 void Draw() {
@@ -50,7 +50,7 @@ void Draw() {
           cout << "*";
         } else {
           bool tail = false;
-          for (int k = 1; k < nTail; k++) {     // tail
+          for (int k = 0; k < nTail; k++) {     // tail
             if (tailX[k] == j && tailY[k] ==  i) {
               cout << "o";
               tail = true;
@@ -154,6 +154,10 @@ void Logic() {
   if (headX == fruitX && headY == fruitY) {
     fruitX = rand() % width;
     fruitY = rand() % height;
+    while (fruitX == 0 || fruitX == width || fruitY == 0 || fruitY == width) {
+      fruitX = rand() % width;
+      fruitY = rand() % height;
+    }
     score += 10;
     nTail++;
   }
