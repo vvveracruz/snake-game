@@ -30,7 +30,7 @@ void Draw() {
 
   /*----- top wall ----*/
   for (int i = 0; i <= width; i++) {
-    cout << "#";
+    cout << "-";
   }
   cout << endl;
 
@@ -38,14 +38,14 @@ void Draw() {
   for (int i = 0; i < height; i++) {
     for (int j = 0; j <= width; j++){
       if (j == 0) {
-        cout << "#";
+        cout << "|";
       } else if ( j == width) {
-        cout << "#";
+        cout << "|";
       } else {
         if ( i == snakeY && j == snakeX) {
           cout << "O"; //this is the snake head
         } else if ( i == fruitY && j == fruitX) {
-          cout << "F";
+          cout << "*";
         } else {
           cout << " ";
         }
@@ -56,7 +56,7 @@ void Draw() {
 
   /*--- bottom wall ---*/
   for (int i = 0; i <= width; i++) {
-    cout << "#";
+    cout << "-";
   }
   cout << endl;
 
@@ -74,7 +74,67 @@ int kbhit() {
    }
 }
 
-void Move() {
+void Input() {
+  clear();
+  Draw();
+  usleep(200000);
+  nodelay(stdscr, TRUE);
+  if (kbhit()) {
+    switch (getch()) { // return ascii value of keyboard hit
+      case 97: // a
+        dir = RIGHT;
+        snakeX--;
+        break;
+      case 100: // d
+        dir =  LEFT;
+        snakeX++;
+        break;
+      case 115: // s
+        dir = DOWN;
+        snakeY++;
+        break;
+      case 119: // w
+        dir = UP;
+        snakeY--;
+        break;
+      case 120: // x
+        gameOver = true;
+        break;
+    }
+  } else {
+    switch (dir) {
+      case RIGHT: // a
+        snakeX--;
+        break;
+      case LEFT: // d
+        snakeX++;
+        break;
+      case DOWN: // s
+        snakeY++;
+        break;
+      case UP: // w
+        snakeY--;
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void Logic() {
+  if (snakeX >  width || snakeX < 0 || snakeY >  height || snakeY < 0) {
+    gameOver = true;
+  }
+
+  if (snakeX == fruitX && snakeY == fruitY) {
+    // add tail to snake
+    // change the position fo the fruit
+    fruitX = rand() % width;
+    fruitY = rand() % height;
+  }
+}
+
+void Play() {
   cout << "Input running" << endl; //TODO: delete
 
   initscr();
@@ -82,58 +142,8 @@ void Move() {
   curs_set(FALSE);
 
   while(!gameOver){
-    clear();
-    Draw();
-    usleep(200000);
-    nodelay(stdscr, TRUE);
-    if (kbhit()) {
-      switch (getch()) { // return ascii value of keyboard hit
-        case 97: // a
-          dir = RIGHT;
-          snakeX--;
-          break;
-        case 100: // d
-          dir =  LEFT;
-          snakeX++;
-          break;
-        case 115: // s
-          dir = DOWN;
-          snakeY++;
-          break;
-        case 119: // w
-          dir = UP;
-          snakeY--;
-          break;
-        case 120: // x
-          gameOver = true;
-          break;
-      }
-    } else {
-      switch (dir) {
-        case RIGHT: // a
-          snakeX--;
-          break;
-        case LEFT: // d
-          snakeX++;
-          break;
-        case DOWN: // s
-          snakeY++;
-          break;
-        case UP: // w
-          snakeY--;
-          break;
-        default:
-          break;
-      }
-    }
-
-    if (snakeX >  width || snakeX < 0) {
-      gameOver = true;
-    }
-    if (snakeY >  height || snakeY < 0) {
-      gameOver = true;
-    }
-
+    Input();
+    Logic();
     refresh();
     endwin();
   }
@@ -143,7 +153,7 @@ void Move() {
 int main() {
 
   Setup();
-  Move();
+  Play();
 
   return 0;
 }
