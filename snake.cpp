@@ -7,10 +7,10 @@ using namespace std;
 
 bool gameOver; //global variable that will be used throughout
 
-/*--- Game dimensions ---*/
 const int width  = 40;
 const int height = 20;
-int snakeX, snakeY, fruitX, fruitY, score;
+int headX, headY, fruitX, fruitY, score, nTail;
+int tailX[100], tailY[100];
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN};
 eDirection dir;
@@ -18,15 +18,18 @@ eDirection dir;
 void Setup() {
   gameOver = false;
   dir = STOP;
-  snakeX = width / 2;
-  snakeY = height / 2;
+  headX = width / 2;
+  headY = height / 2;
   fruitX = rand() % width;
   fruitY = rand() % height;
   score = 0;
+  nTail = 1;
 }
 
 void Draw() {
   system("clear"); //system('cls') on windows
+
+  cout << "SCORE: " << score << endl;
 
   /*----- top wall ----*/
   for (int i = 0; i <= width; i++) {
@@ -34,7 +37,6 @@ void Draw() {
   }
   cout << endl;
 
-  /*----- borders -----*/
   for (int i = 0; i < height; i++) {
     for (int j = 0; j <= width; j++){
       if (j == 0) {
@@ -42,12 +44,21 @@ void Draw() {
       } else if ( j == width) {
         cout << "|";
       } else {
-        if ( i == snakeY && j == snakeX) {
-          cout << "O"; //this is the snake head
-        } else if ( i == fruitY && j == fruitX) {
+        if ( i == headY && j == headX) {          // snake head
+          cout << "O";
+        } else if ( i == fruitY && j == fruitX) { // fruit
           cout << "*";
         } else {
-          cout << " ";
+          bool tail = false;
+          for (int k = 1; k < nTail; k++) {     // tail
+            if (tailX[k] == j && tailY[k] ==  i) {
+              cout << "o";
+              tail = true;
+            }
+          }
+          if (!tail) {
+            cout << " ";
+          }
         }
       }
     }
@@ -83,19 +94,19 @@ void Input() {
     switch (getch()) { // return ascii value of keyboard hit
       case 97: // a
         dir = RIGHT;
-        snakeX--;
+        headX--;
         break;
       case 100: // d
         dir =  LEFT;
-        snakeX++;
+        headX++;
         break;
       case 115: // s
         dir = DOWN;
-        snakeY++;
+        headY++;
         break;
       case 119: // w
         dir = UP;
-        snakeY--;
+        headY--;
         break;
       case 120: // x
         gameOver = true;
@@ -104,16 +115,16 @@ void Input() {
   } else {
     switch (dir) {
       case RIGHT: // a
-        snakeX--;
+        headX--;
         break;
       case LEFT: // d
-        snakeX++;
+        headX++;
         break;
       case DOWN: // s
-        snakeY++;
+        headY++;
         break;
       case UP: // w
-        snakeY--;
+        headY--;
         break;
       default:
         break;
@@ -122,15 +133,29 @@ void Input() {
 }
 
 void Logic() {
-  if (snakeX >  width || snakeX < 0 || snakeY >  height || snakeY < 0) {
+  if (headX >  width || headX < 0 || headY >  height || headY < 0) {
     gameOver = true;
   }
 
-  if (snakeX == fruitX && snakeY == fruitY) {
-    // add tail to snake
-    // change the position fo the fruit
+  tailX[0] = headX;
+  tailY[0] = headY;
+  int prevX = tailX[0];
+  int prevY = tailY[0];
+  int prev2X, prev2Y;
+  for (int i = 1; i < nTail; i++) {
+    prev2X = tailX[i];
+    prev2Y = tailY[i];
+    tailX[i] = prevX;
+    tailY[i] = prevY;
+    prevX = prev2X;
+    prevY = prev2Y;
+  }
+
+  if (headX == fruitX && headY == fruitY) {
     fruitX = rand() % width;
     fruitY = rand() % height;
+    score += 10;
+    nTail++;
   }
 }
 
