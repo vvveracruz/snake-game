@@ -1,7 +1,8 @@
 /* Sources for this project:
   https://youtu.be/E_-lMZDi7Uw */
 #include <iostream>
-#include <ncurses> //for the inputs
+#include <ncurses.h> //for the inputs
+#include <unistd.h>
 using namespace std;
 
 bool gameOver; //global variable that will be used throughout
@@ -62,51 +63,87 @@ void Draw() {
 
 }
 
-void Input() {
+int kbhit() {
+  int ch = getch();
+
+   if (ch != ERR) {
+       ungetch(ch);
+       return 1;
+   } else {
+       return 0;
+   }
+}
+
+void Move() {
   cout << "Input running" << endl; //TODO: delete
 
-  if (kbhit()) { // keyboard hit, returns positive no if keyboard is hit, zero otherwise
-    switch (getch()) { // return ascii value of keyboard hit
-      case 'a':
-        dir = LEFT;
-        break;
-      case 'd':
-        dir = DOWN;
-        break;
-      case 's':
-        dir = RIGHT;
-        break;
-      case 'w':
-        dir = UP;
-        break;
-      case 'x':
-        gameOver = true;
-        break;
+  initscr();
+  noecho();
+  curs_set(FALSE);
+
+  while(!gameOver){
+    clear();
+    Draw();
+    usleep(200000);
+    nodelay(stdscr, TRUE);
+    if (kbhit()) {
+      switch (getch()) { // return ascii value of keyboard hit
+        case 97: // a
+          dir = RIGHT;
+          snakeX--;
+          break;
+        case 100: // d
+          dir =  LEFT;
+          snakeX++;
+          break;
+        case 115: // s
+          dir = DOWN;
+          snakeY++;
+          break;
+        case 119: // w
+          dir = UP;
+          snakeY--;
+          break;
+        case 120: // x
+          gameOver = true;
+          break;
+      }
+    } else {
+      switch (dir) {
+        case RIGHT: // a
+          snakeX--;
+          break;
+        case LEFT: // d
+          snakeX++;
+          break;
+        case DOWN: // s
+          snakeY++;
+          break;
+        case UP: // w
+          snakeY--;
+          break;
+        default:
+          break;
+      }
     }
+
+    if (snakeX >  width || snakeX < 0) {
+      gameOver = true;
+    }
+    if (snakeY >  height || snakeY < 0) {
+      gameOver = true;
+    }
+
+    refresh();
+    endwin();
   }
-
 }
 
-void Logic() {
-  cout << "Logic running" << endl; //TODO: delete
-
-}
 
 int main() {
-  cout << "Main running" << endl; //TODO: delete
 
   Setup();
-  while (!gameOver) {
-    Draw();
-    Input();
-    Logic();
-    // need to change the value of gameOver here otherwise it will keep going forever!
-    // can add a sleep function here to make it go slower
-    // sleep(10) - 10 milliseconds
-    gameOver = true;
-  }
-
-  cout << "End of main" << endl; //TODO: delete
+  Move();
 
   return 0;
 }
