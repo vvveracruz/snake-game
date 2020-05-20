@@ -108,6 +108,8 @@ void Input() {
         dir = UP;
         headY--;
         break;
+      default:
+        break;
     }
   } else {
     switch (dir) {
@@ -168,18 +170,32 @@ void Logic() {
   }
 }
 
+void Welcome() {
+  bool letsPlay = false;
+  cout << '\n' << "Press P to play\n" << endl;
+
+  while (cin.get() != 'p') {
+    cout << '\n' << "Press P to play" << endl;
+  }
+
+  letsPlay = true;
+}
+
 void Play() {
-  cout << "Input running" << endl; //TODO: delete
+  Welcome()
 
-  initscr();
-  noecho();
-  curs_set(FALSE);
+  while (letsPlay){
+    initscr();
+    noecho();
+    curs_set(FALSE);
 
-  while(!gameOver){
-    Input();
-    Logic();
-    refresh();
-    endwin();
+    while(!gameOver){
+      Input();
+      Logic();
+      refresh();
+      endwin();
+    }
+
   }
 }
 
