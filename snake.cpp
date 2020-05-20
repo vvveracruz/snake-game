@@ -182,9 +182,7 @@ void Welcome() {
 }
 
 void Play() {
-  Welcome()
 
-  while (letsPlay){
     initscr();
     noecho();
     curs_set(FALSE);
@@ -196,7 +194,6 @@ void Play() {
       endwin();
     }
 
-  }
 }
 
 
