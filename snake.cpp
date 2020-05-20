@@ -108,9 +108,6 @@ void Input() {
         dir = UP;
         headY--;
         break;
-      case 120: // x
-        gameOver = true;
-        break;
     }
   } else {
     switch (dir) {
