@@ -1,10 +1,22 @@
+#include "DEFINITIONS.hpp"
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+int main() {
+
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML works!");
+
+    sf::Texture snakeHeadTexture;
+    snakeHeadTexture.loadFromFile( SNAKE_HEAD_FILEPATH ) ;
+
+    sf::Sprite snakeHeadSprite;
+    snakeHeadSprite.setTexture( snakeHeadTexture );
+
+    sf::Texture snakeBodyTexture;
+    snakeBodyTexture.loadFromFile( SNAKE_BODY_FILEPATH );
+
+    sf::Sprite snakeBodySprite;
+    snakeBodySprite.setTexture( snakeBodyTexture );
 
     while (window.isOpen())
     {
@@ -16,7 +28,8 @@ int main()
         }
 
         window.clear();
-        window.draw(shape);
+        window.draw( snakeHeadSprite );
+        window.draw( snakeBodySprite );
         window.display();
     }
 
