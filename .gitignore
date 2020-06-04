@@ -1,3 +1,5 @@
 .DS_Store
 a.out
 snake-game.xcodeproj/
+*.o
+sfml-app

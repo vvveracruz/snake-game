@@ -1,4 +1,4 @@
-SOURCES = src/main.cpp
+SOURCES = src/main.cpp src/game.cpp
 OBJECTS = $(SOURCES:.c=.o)
 
 run:

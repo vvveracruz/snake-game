@@ -1,18 +1,18 @@
 #pragma once
 
-#include <memory>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "DEFINITIONS.hpp"
 
 namespace vgg {
 
 class Game {
 
 public:
-    Game( int width, int height, std::string title );
+  Game();
 
 private:
-    void Run( );
+  void Run();
 
 };
 }

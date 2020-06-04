@@ -1,57 +1,42 @@
 #include "game.hpp"
-#include "splashState.hpp"
-
-#include <stdlib.h>
-#include <time.h>
 
 namespace vgg {
 
-Game::Game( int width, int height , std::string title ) {
+Game::Game() {
 
-    srand( time( NULL ) ); // creating seed for randomisation of pipe position
-
-    _data -> window.create( sf::VideoMode( width, height ), title, sf::Style::Close | sf::Style::Titlebar );
-
-    _data -> machine.AddState( StateRef( new SplashState( this -> _data ) ) );
-
-    this -> Run( );
+  Run();
 
 }
 
-void Game::Run( ) {
+void Game::Run() {
 
-    float newTime, frameTime, interpolation;
+  sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME);
 
-    float currentTime = this -> _clock.getElapsedTime( ).asSeconds( );
-    float accumulator = 0.0f;
+  sf::Texture snakeHeadTexture;
+  snakeHeadTexture.loadFromFile( SNAKE_HEAD_FILEPATH ) ;
 
-    while ( this -> _data -> window.isOpen( ) ) {
+  sf::Sprite snakeHeadSprite;
+  snakeHeadSprite.setTexture( snakeHeadTexture );
 
-        this -> _data -> machine.ProcessStateChanges( );
+  sf::Texture snakeBodyTexture;
+  snakeBodyTexture.loadFromFile( SNAKE_BODY_FILEPATH );
 
-        newTime = this -> _clock.getElapsedTime( ).asSeconds( );
-        frameTime = newTime - currentTime;
+  sf::Sprite snakeBodySprite;
+  snakeBodySprite.setTexture( snakeBodyTexture );
 
-        if ( frameTime > 0.25f ) {
-            frameTime = 0.25f;
-        }
+  while (window.isOpen())
+  {
+      sf::Event event;
+      while (window.pollEvent(event))
+      {
+          if (event.type == sf::Event::Closed)
+              window.close();
+      }
 
-        currentTime = newTime;
-        accumulator += frameTime;
-
-        while ( accumulator >= dt ) {
-
-            this -> _data -> machine.GetActiveState( )->HandleInput( );
-            this -> _data -> machine.GetActiveState( )->Update( dt );
-
-            accumulator -= dt;
-
-        }
-
-        interpolation = accumulator / dt;
-
-        this -> _data -> machine.GetActiveState( ) -> Draw( interpolation );
-
-    }
+      window.clear();
+      window.draw( snakeHeadSprite );
+      window.draw( snakeBodySprite );
+      window.display();
+  }
 }
 }
